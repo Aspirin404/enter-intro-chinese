@@ -37,6 +37,21 @@ export default function App() {
 
   const C = getContent(locale);
 
+  // Dynamic SEO
+  useEffect(() => {
+    const title = locale === 'zh'
+      ? 'Enter.pro — AI 驱动的 Web 开发平台 | 产品使用手册'
+      : 'Enter.pro — AI-Powered Web Development Platform | Product Guide';
+    const desc = locale === 'zh'
+      ? 'Enter.pro 是 AI 驱动的 Web 开发平台，用自然语言构建网站，一键部署。完整产品指南与最佳实践。'
+      : 'Enter.pro is an AI-powered web development platform. Build websites with natural language, deploy in one click.';
+    document.title = title;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', desc);
+    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+  }, [locale]);
+
   // Render slides into DOM
   useEffect(() => {
     if (!stageRef.current) return;

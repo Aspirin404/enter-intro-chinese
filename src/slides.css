@@ -253,10 +253,117 @@
 .s-contact .wechat-note { margin-top: 18px; background: var(--gray-50); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: var(--gray-500); }
 .s-contact .wechat-note span { color: var(--red); font-weight: 700; }
 
-/* Responsive */
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
 @media (max-width: 768px) {
+  /* Split layouts → stack vertically */
   .s-inner { flex-direction: column; }
-  .s-col-left, .s-col-right { width: 100%; padding: 24px; }
-  #controls { padding: 10px 16px; }
-  #overview-grid { grid-template-columns: repeat(3, 1fr); }
+  .s-col-left, .s-col-right { width: 100% !important; padding: 20px 20px 16px !important; }
+  .s-col-left { flex: 0 0 auto; min-height: 0; }
+  .s-col-right { flex: 1; overflow-y: auto; }
+
+  /* Cover */
+  .s-cover .content { padding: 0 24px; }
+  .s-cover h1 { font-size: clamp(36px, 10vw, 52px) !important; }
+  .s-cover .subtitle { font-size: clamp(15px, 4vw, 19px) !important; }
+  .s-cover .slogan { font-size: 13px !important; margin-bottom: 20px !important; }
+  .s-cover .meta { flex-wrap: wrap; gap: 8px; }
+
+  /* Slide 2 — What */
+  .s-what .left { width: 100% !important; padding: 20px 24px 14px !important; }
+  .s-what .left h2 { font-size: 26px !important; margin-bottom: 6px !important; }
+  .s-what .left .slogan { font-size: 13px !important; }
+  .s-what .right { padding: 14px 24px 20px !important; }
+  .s-what .intro-text { font-size: 14px !important; margin-bottom: 14px !important; }
+  .s-what .links { gap: 6px; }
+
+  /* Slide 3 — Audience */
+  .s-audience .inner { flex-direction: column; padding: 56px 20px 20px !important; gap: 16px !important; }
+  .s-audience .left-title { width: 100% !important; }
+  .s-audience .left-title h2 { font-size: 24px !important; }
+  .s-audience .items { gap: 14px !important; }
+  .s-audience .item-body h4 { font-size: 15px !important; }
+  .s-audience .item-body p { font-size: 13px !important; }
+
+  /* Slide 4 — Quick Start */
+  .s-quickstart .inner { padding: 56px 16px 20px !important; }
+  .s-quickstart .header h2 { font-size: 22px !important; }
+  .s-quickstart .steps { flex-direction: column !important; gap: 8px !important; }
+  .s-quickstart .step { padding: 14px 12px !important; }
+  .s-quickstart .step h3 { font-size: 15px !important; }
+  .s-quickstart .step p { font-size: 13px !important; }
+  .s-quickstart .arrow { display: none !important; }
+
+  /* Slide 5 — Modes */
+  .s-modes .left { width: 100% !important; padding: 20px 24px 14px !important; }
+  .s-modes .left h2 { font-size: 24px !important; }
+  .s-modes .right { padding: 10px 20px 20px !important; gap: 8px !important; }
+  .s-modes .mode-card { padding: 12px 14px !important; }
+
+  /* Slide 6 — Plan */
+  .s-plan .inner { flex-direction: column !important; padding: 56px 20px 20px !important; gap: 16px !important; }
+  .s-plan .left { width: 100% !important; }
+  .s-plan .left h2 { font-size: 26px !important; }
+  .s-plan .right { gap: 8px !important; }
+
+  /* Slide 7 — MaaS */
+  .s-maas .inner { padding: 56px 16px 20px !important; }
+  .s-maas .header { flex-wrap: wrap; gap: 8px !important; padding-bottom: 12px !important; }
+  .s-maas .header h2 { font-size: 22px !important; }
+  .s-maas .header .sub { margin-left: 0; width: 100%; }
+  .s-maas .body { flex-direction: column !important; gap: 16px !important; overflow-y: auto; }
+  .s-maas .intro { width: 100% !important; }
+
+  /* Slide 8 — Skills */
+  .s-skills .inner { padding: 56px 16px 20px !important; }
+  .s-skills .header h2 { font-size: 18px !important; }
+  .s-skills .cols { flex-direction: column !important; gap: 12px !important; overflow-y: auto; }
+  .s-skills .col { padding: 14px 16px !important; }
+
+  /* Slide 9 — Cloud */
+  .s-cloud .left { width: 100% !important; padding: 20px 24px 14px !important; }
+  .s-cloud .left h2 { font-size: 28px !important; }
+  .s-cloud .right { padding: 10px 20px 20px !important; overflow-y: auto; }
+  .s-cloud .feat-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
+
+  /* Slide 10 — Integrations */
+  .s-integrations .inner { padding: 56px 16px 20px !important; }
+  .s-integrations .header h2 { font-size: 20px !important; }
+  .s-integrations .cards { flex-direction: column !important; overflow-y: auto; }
+  .s-integrations .cards-col-left { width: 100% !important; }
+  .s-integrations .cards-col-right { width: 100% !important; }
+
+  /* Slide 11 — Templates */
+  .s-templates .left { width: 100% !important; padding: 20px 24px 14px !important; }
+  .s-templates .left h2 { font-size: 22px !important; }
+  .s-templates .right { padding: 10px 20px 20px !important; overflow-y: auto; }
+  .s-templates .model-name { width: 100px !important; font-size: 12px !important; }
+
+  /* Slide 12 — Credits */
+  .s-credits .left { width: 100% !important; padding: 20px 24px 14px !important; }
+  .s-credits .left h2 { font-size: 26px !important; }
+  .s-credits .right { padding: 10px 20px 20px !important; overflow-y: auto; }
+
+  /* Slide 13 — Tips */
+  .s-tips .inner { padding: 56px 12px 20px !important; }
+  .s-tips .header h2 { font-size: 20px !important; }
+  .s-tips .grid { grid-template-columns: 1fr 1fr !important; overflow-y: auto; }
+  .s-tips .tip-card { padding: 12px 14px !important; }
+  .s-tips .tip-card h4 { font-size: 13px !important; }
+  .s-tips .tip-card p { font-size: 12px !important; }
+  .s-tips .bottom-bar { flex-direction: column; gap: 10px !important; text-align: center; padding: 10px 14px !important; }
+
+  /* Slide 14 — Contact */
+  .s-contact .left { width: 100% !important; padding: 20px 24px 14px !important; }
+  .s-contact .left h2 { font-size: 32px !important; }
+  .s-contact .left .tagline { font-size: 14px !important; margin-bottom: 16px !important; }
+  .s-contact .right { padding: 10px 24px 20px !important; }
 }
+
+@media (max-width: 480px) {
+  .s-cover h1 { font-size: 32px !important; }
+  .s-tips .grid { grid-template-columns: 1fr !important; }
+  .s-quickstart .step-icon { font-size: 20px !important; }
+}
+

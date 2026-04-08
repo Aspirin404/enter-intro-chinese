@@ -231,3 +231,35 @@ a.link-item:hover { color: var(--red); transform: translateX(3px); }
 a.link-row { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; border-radius: 6px; padding: 4px 6px; margin: -4px -6px; transition: background 0.2s; cursor: pointer; }
 a.link-row:hover { background: var(--gray-50); }
 a.link-row:hover .lv { color: var(--red); }
+
+/* ============================================================
+   MOBILE RESPONSIVE — UI Chrome
+   ============================================================ */
+@media (max-width: 768px) {
+  #header { padding: 8px 16px; }
+  .hd-logo .logo-icon { width: 22px; height: 22px; }
+  .hd-logo span { font-size: 14px; }
+  .hd-right { gap: 8px; }
+  .lang-toggle { font-size: 11px; padding: 2px 8px; }
+  #slide-counter { font-size: 13px; }
+  #btn-fullscreen { width: 26px; height: 26px; font-size: 14px; }
+
+  #controls { bottom: 12px; right: 12px; padding: 4px 6px; gap: 4px; }
+  .ctrl-btn { width: 28px; height: 28px; font-size: 12px; }
+  .ctrl-btn svg { width: 14px; height: 14px; }
+  #dots { gap: 3px; margin: 0 2px; }
+  .dot { width: 4px; height: 4px; }
+  .dot.is-active { width: 12px; }
+
+  #stage { padding-top: 40px; }
+
+  #overview { padding: 48px 16px 60px; }
+  #overview-header { margin-bottom: 20px; }
+  #overview-header h2 { font-size: 18px; }
+  #overview-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .ov-thumb-title { font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  #overview-grid { grid-template-columns: repeat(2, 1fr); }
+}
