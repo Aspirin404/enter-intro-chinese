@@ -5,6 +5,7 @@ import './slides.css';
 const TOTAL = 14;
 
 export default function App() {
+  console.log('[App] Rendering presentation...');
   const [current, setCurrent] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [overviewOpen, setOverviewOpen] = useState(false);

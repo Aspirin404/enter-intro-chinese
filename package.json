@@ -1,18 +1,22 @@
 {
   "name": "enter-intro-chinese",
+  "private": true,
   "version": "1.0.0",
-  "description": "Enter.pro 产品使用手册 — 14页交互式中文演示",
+  "type": "module",
   "scripts": {
-    "start": "serve . -p 3000",
-    "dev": "serve . -p 3000"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "serve": "^14.2.3",
     "typescript": "^6.0.2",
     "vite": "^8.0.7"
   }
