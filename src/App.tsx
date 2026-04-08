@@ -5,13 +5,10 @@ import './slides.css';
 const TOTAL = 14;
 
 export default function App() {
-  console.log('[App] Rendering presentation...');
   const [current, setCurrent] = useState(0);
-  const [playing, setPlaying] = useState(false);
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
-  const playTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentRef = useRef(current);
   currentRef.current = current;
   
@@ -57,32 +54,13 @@ export default function App() {
   const next = useCallback(() => goTo((currentRef.current + 1) % TOTAL), [goTo]);
   const prev = useCallback(() => goTo((currentRef.current - 1 + TOTAL) % TOTAL), [goTo]);
 
-  // Autoplay
-  const stopPlay = useCallback(() => {
-    setPlaying(false);
-    if (playTimerRef.current) { clearInterval(playTimerRef.current); playTimerRef.current = null; }
-  }, []);
-
-  const togglePlay = useCallback(() => {
-    if (playing) {
-      stopPlay();
-    } else {
-      setPlaying(true);
-      playTimerRef.current = setInterval(() => {
-        const nextIdx = (currentRef.current + 1) % TOTAL;
-        goTo(nextIdx);
-      }, 4500);
-    }
-  }, [playing, stopPlay, goTo]);
-
   // Keyboard & touch
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).tagName === 'INPUT') return;
       switch (e.key) {
-        case 'ArrowRight': case 'ArrowDown': stopPlay(); next(); break;
-        case 'ArrowLeft': case 'ArrowUp': stopPlay(); prev(); break;
-        case ' ': e.preventDefault(); togglePlay(); break;
+        case 'ArrowRight': case 'ArrowDown': next(); break;
+        case 'ArrowLeft': case 'ArrowUp': prev(); break;
         case 'f': case 'F':
           if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
           else document.exitFullscreen?.();
@@ -90,15 +68,15 @@ export default function App() {
         case 'o': case 'O': setOverviewOpen(v => !v); break;
         case 'Escape': setOverviewOpen(false); setHintsOpen(false); break;
         case '?': setHintsOpen(v => !v); break;
-        case 'Home': stopPlay(); goTo(0); break;
-        case 'End': stopPlay(); goTo(TOTAL - 1); break;
+        case 'Home': goTo(0); break;
+        case 'End': goTo(TOTAL - 1); break;
       }
     };
     let touchStartX = 0;
     const onTouchStart = (e: TouchEvent) => { touchStartX = e.touches[0].clientX; };
     const onTouchEnd = (e: TouchEvent) => {
       const dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 50) { stopPlay(); dx < 0 ? next() : prev(); }
+      if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
     };
     document.addEventListener('keydown', onKey);
     document.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -108,10 +86,7 @@ export default function App() {
       document.removeEventListener('touchstart', onTouchStart);
       document.removeEventListener('touchend', onTouchEnd);
     };
-  }, [next, prev, stopPlay, togglePlay, goTo]);
-
-  // Cleanup timer on unmount
-  useEffect(() => () => { if (playTimerRef.current) clearInterval(playTimerRef.current); }, []);
+  }, [next, prev, goTo]);
 
   const pct = TOTAL > 1 ? (current / (TOTAL - 1)) * 100 : 100;
 
@@ -123,7 +98,9 @@ export default function App() {
       {/* Header */}
       <div id="header">
         <div className="hd-logo">
-          <div className="logo-icon">&lt;/&gt;</div>
+          <div className="logo-icon">
+            <img src="https://grazia-prod.oss-ap-southeast-1.aliyuncs.com/resources/uid_100000002/e65c.png" alt="Enter.pro" crossOrigin="anonymous" />
+          </div>
           <span>Enter.pro</span>
         </div>
         <div className="hd-right">
@@ -140,16 +117,21 @@ export default function App() {
 
       {/* Controls */}
       <div id="controls">
-        <button className="ctrl-btn" title="\u5E7B\u706F\u7247\u603B\u89C8 (O)" onClick={() => setOverviewOpen(v => !v)}>{'\u229E'}</button>
-        <button className="ctrl-btn" title="\u4E0A\u4E00\u5F20 (\u2190)" onClick={() => { stopPlay(); prev(); }}>{'\u2190'}</button>
+        <button className="ctrl-btn" title="&#x5E7B;&#x706F;&#x7247;&#x603B;&#x89C8; (O)" onClick={() => setOverviewOpen(v => !v)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </button>
+        <button className="ctrl-btn" title="&#x4E0A;&#x4E00;&#x5F20; (&#x2190;)" onClick={() => prev()}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
         <div id="dots">
           {Array.from({ length: TOTAL }).map((_, i) => (
-            <div key={i} className={`dot${i === current ? ' is-active' : ''}`} title={SLIDE_TITLES[i]} onClick={() => { stopPlay(); goTo(i); }} />
+            <div key={i} className={`dot${i === current ? ' is-active' : ''}`} title={SLIDE_TITLES[i]} onClick={() => goTo(i)} />
           ))}
         </div>
-        <button id="btn-play" className={playing ? 'is-playing' : ''} title={playing ? '\u6682\u505C (Space)' : '\u81EA\u52A8\u64AD\u653E (Space)'} onClick={togglePlay}>{playing ? '\u23F8' : '\u25B6'}</button>
-        <button className="ctrl-btn" title="\u4E0B\u4E00\u5F20 (\u2192)" onClick={() => { stopPlay(); next(); }}>{'\u2192'}</button>
-        <button className="ctrl-btn" title="\u952E\u76D8\u5FEB\u6377\u952E (?)" onClick={() => setHintsOpen(v => !v)}>?</button>
+        <button className="ctrl-btn" title="&#x4E0B;&#x4E00;&#x5F20; (&#x2192;)" onClick={() => next()}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button className="ctrl-btn" title="&#x952E;&#x76D8;&#x5FEB;&#x6377;&#x952E; (?)" onClick={() => setHintsOpen(v => !v)}>?</button>
       </div>
 
       {/* Overview */}
@@ -176,7 +158,6 @@ export default function App() {
             <h3 style={{ color: '#fff', fontSize: 16, marginBottom: 20 }}>{'\u952E\u76D8\u5FEB\u6377\u952E'}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 20px', fontSize: 12 }}>
               <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>{'\u2190 \u2192'}</kbd><span style={{ color: '#888' }}>{'\u4E0A / \u4E0B\u4E00\u5F20'}</span>
-              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>Space</kbd><span style={{ color: '#888' }}>{'\u81EA\u52A8\u64AD\u653E'}</span>
               <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>O</kbd><span style={{ color: '#888' }}>{'\u5E7B\u706F\u7247\u603B\u89C8'}</span>
               <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>F</kbd><span style={{ color: '#888' }}>{'\u5168\u5C4F'}</span>
               <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>Esc</kbd><span style={{ color: '#888' }}>{'\u5173\u95ED\u9762\u677F'}</span>

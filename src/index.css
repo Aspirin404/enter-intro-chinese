@@ -54,9 +54,11 @@ ul { list-style: none; }
 .hd-logo { display: flex; align-items: center; gap: 8px; }
 .hd-logo .logo-icon {
   width: 28px; height: 28px;
-  background: var(--red); border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16.9px; color: #fff; font-weight: 900;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hd-logo .logo-icon img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .hd-logo span { font-size: 18.2px; font-weight: 700; color: var(--black); letter-spacing: 0.5px; }
 .hd-right { display: flex; align-items: center; gap: 14px; pointer-events: all; }
@@ -114,37 +116,34 @@ ul { list-style: none; }
 
 /* === Controls Bar === */
 #controls {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
-  display: flex; align-items: center; justify-content: center;
-  padding: 14px 28px; gap: 10px;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+  position: fixed; bottom: 20px; right: 24px; z-index: 90;
+  display: flex; align-items: center;
+  padding: 6px 8px; gap: 6px;
+  background: rgba(0,0,0,0.7);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .ctrl-btn {
-  width: 38px; height: 38px; border-radius: 10px;
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.7); font-size: 20.8px;
+  width: 32px; height: 32px; border-radius: 7px;
+  background: transparent;
+  color: rgba(255,255,255,0.6); font-size: 14px;
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, color 0.2s, transform 0.15s;
+  transition: background 0.2s, color 0.2s;
 }
-.ctrl-btn:hover { background: rgba(255,255,255,0.15); color: #fff; transform: scale(1.05); }
-.ctrl-btn:active { transform: scale(0.95); }
-#btn-play {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: var(--red); color: #fff; font-size: 20.8px;
-  transition: background 0.2s, transform 0.15s;
-}
-#btn-play:hover { background: #c5253f; }
-#btn-play.is-playing { background: rgba(255,255,255,0.15); }
+.ctrl-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.ctrl-btn:active { opacity: 0.7; }
+.ctrl-btn svg { width: 16px; height: 16px; }
 
 /* Dot indicators */
-#dots { display: flex; align-items: center; gap: 5px; margin: 0 6px; }
+#dots { display: flex; align-items: center; gap: 4px; margin: 0 4px; }
 .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255,255,255,0.2);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
   transition: background 0.3s, width 0.3s, border-radius 0.3s;
   cursor: pointer;
 }
-.dot.is-active { width: 20px; border-radius: 3px; background: var(--red); }
+.dot.is-active { width: 16px; border-radius: 3px; background: var(--red); }
 .dot:hover { background: rgba(255,255,255,0.5); }
 
 /* === Overview Mode === */
