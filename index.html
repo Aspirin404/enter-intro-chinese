@@ -71,10 +71,12 @@
 
 <!--
   加载顺序很重要：
-  1. slides.js — 注册 window.EnterSlides（内容）
-  2. nav.js    — 定义 NavController 类（导航）
-  3. app.js    — 渲染 slides 并启动 NavController
+  1. content.js — 注册 window.EnterContent（纯数据，改文案只需动这里）
+  2. slides.js  — 读取 EnterContent，注册 window.EnterSlides（HTML 模板）
+  3. nav.js     — 定义 NavController 类（导航逻辑）
+  4. app.js     — 渲染 slides 并启动 NavController
 -->
+<script src="src/content.js"></script>
 <script src="src/slides.js"></script>
 <script src="src/nav.js"></script>
 <script src="src/app.js"></script>
