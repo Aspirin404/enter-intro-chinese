@@ -5,7 +5,13 @@ import './slides.css';
 const TOTAL = 14;
 
 export default function App() {
-  const [current, setCurrent] = useState(0);
+  const getInitialSlide = () => {
+    const p = new URLSearchParams(window.location.search);
+    const s = parseInt(p.get('slide') || '1', 10);
+    return Math.max(0, Math.min(TOTAL - 1, s - 1));
+  };
+
+  const [current, setCurrent] = useState(getInitialSlide);
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -17,6 +23,13 @@ export default function App() {
   useEffect(() => {
     if (stageRef.current) {
       stageRef.current.innerHTML = getSlideHTML().join('\n');
+      // Set initial slide based on URL param
+      const initial = getInitialSlide();
+      if (initial > 0) {
+        const slides = stageRef.current.querySelectorAll('.slide');
+        slides[0]?.classList.remove('is-active');
+        slides[initial]?.classList.add('is-active');
+      }
     }
   }, []);
 
@@ -49,6 +62,9 @@ export default function App() {
     }, 520);
 
     setCurrent(index);
+    const url = new URL(window.location.href);
+    url.searchParams.set('slide', String(index + 1));
+    window.history.replaceState(null, '', url.toString());
   }, []);
 
   const next = useCallback(() => goTo((currentRef.current + 1) % TOTAL), [goTo]);
