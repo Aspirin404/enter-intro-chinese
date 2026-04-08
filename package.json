@@ -1,0 +1,12 @@
+{
+  "name": "enter-intro-chinese",
+  "version": "1.0.0",
+  "description": "Enter.pro 产品使用手册 — 14页交互式中文演示",
+  "scripts": {
+    "start": "serve . -p 3000",
+    "dev": "serve . -p 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}
