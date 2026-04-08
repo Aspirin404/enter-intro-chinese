@@ -1,0 +1,21 @@
+{
+  "name": "thread",
+  "version": "1.0.0",
+  "description": "基于 Enter.pro 官方内容构建的交互式 Web 演示，无依赖纯原生 HTML/CSS/JS。",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "/workspace/center"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^8.0.7"
+  }
+}
