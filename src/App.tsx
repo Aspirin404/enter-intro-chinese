@@ -13,6 +13,7 @@ export default function App() {
   const playTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentRef = useRef(current);
   currentRef.current = current;
+  
 
   // Render slides into DOM on mount
   useEffect(() => {
