@@ -4,81 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enter.pro — 产品使用手册及技巧</title>
-
-  <!-- Design tokens → slide styles → UI shell -->
-  <link rel="stylesheet" href="styles/tokens.css" />
-  <link rel="stylesheet" href="styles/slides.css" />
-  <link rel="stylesheet" href="styles/ui.css" />
 </head>
 <body>
-<div id="app">
-
-  <!-- Progress Bar -->
-  <div id="progress-bar"><div id="progress-fill"></div></div>
-
-  <!-- Header -->
-  <div id="header">
-    <div class="hd-logo">
-      <div class="logo-icon">&lt;/&gt;</div>
-      <span>Enter.pro</span>
-    </div>
-    <div class="hd-right">
-      <div id="slide-counter"><span id="cur-num">1</span> / <span id="tot-num">14</span></div>
-      <button id="btn-fullscreen" title="全屏 (F)">⛶</button>
-    </div>
-  </div>
-
-  <!-- Slide Stage — populated by src/app.js -->
-  <div id="stage"></div>
-
-  <!-- Controls -->
-  <div id="controls">
-    <button class="ctrl-btn" id="btn-overview" title="幻灯片总览 (O)">⊞</button>
-    <button class="ctrl-btn" id="btn-prev" title="上一张 (←)">←</button>
-    <div id="dots"></div>
-    <button id="btn-play" title="自动播放 (Space)">▶</button>
-    <button class="ctrl-btn" id="btn-next" title="下一张 (→)">→</button>
-    <button class="ctrl-btn" id="btn-keyboard" title="键盘快捷键 (?)">?</button>
-  </div>
-
-  <!-- Overview Panel -->
-  <div id="overview">
-    <div id="overview-header">
-      <h2>幻灯片总览</h2>
-      <button id="btn-close-overview">✕</button>
-    </div>
-    <div id="overview-grid"></div>
-  </div>
-
-  <!-- Keyboard Hints -->
-  <div id="hints" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
-    <div style="background:#1a1a1a;border-radius:12px;padding:32px 40px;min-width:300px;">
-      <h3 style="color:#fff;font-size:16px;margin-bottom:20px;">键盘快捷键</h3>
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 20px;font-size:12px;">
-        <kbd style="background:#333;color:#fff;padding:3px 8px;border-radius:4px;">← →</kbd><span style="color:#888;">上 / 下一张</span>
-        <kbd style="background:#333;color:#fff;padding:3px 8px;border-radius:4px;">Space</kbd><span style="color:#888;">自动播放</span>
-        <kbd style="background:#333;color:#fff;padding:3px 8px;border-radius:4px;">O</kbd><span style="color:#888;">幻灯片总览</span>
-        <kbd style="background:#333;color:#fff;padding:3px 8px;border-radius:4px;">F</kbd><span style="color:#888;">全屏</span>
-        <kbd style="background:#333;color:#fff;padding:3px 8px;border-radius:4px;">Esc</kbd><span style="color:#888;">关闭面板</span>
-        <kbd style="background:#333;color:#fff;padding:3px 8px;border-radius:4px;">?</kbd><span style="color:#888;">显示快捷键</span>
-      </div>
-      <button onclick="document.getElementById('hints').style.display='none'"
-        style="margin-top:24px;width:100%;padding:10px;background:var(--red);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">关闭</button>
-    </div>
-  </div>
-
-</div><!-- /app -->
-
-<!--
-  加载顺序很重要：
-  1. content.js — 注册 window.EnterContent（纯数据，改文案只需动这里）
-  2. slides.js  — 读取 EnterContent，注册 window.EnterSlides（HTML 模板）
-  3. nav.js     — 定义 NavController 类（导航逻辑）
-  4. app.js     — 渲染 slides 并启动 NavController
--->
-<script src="src/content.js"></script>
-<script src="src/slides.js"></script>
-<script src="src/nav.js"></script>
-<script src="src/app.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
