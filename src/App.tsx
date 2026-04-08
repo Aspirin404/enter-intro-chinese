@@ -61,6 +61,7 @@ export default function App() {
       switch (e.key) {
         case 'ArrowRight': case 'ArrowDown': next(); break;
         case 'ArrowLeft': case 'ArrowUp': prev(); break;
+        case ' ': case 'Enter': e.preventDefault(); next(); break;
         case 'f': case 'F':
           if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
           else document.exitFullscreen?.();
