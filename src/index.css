@@ -62,6 +62,13 @@ ul { list-style: none; }
 }
 .hd-logo span { font-size: 18.2px; font-weight: 700; color: var(--black); letter-spacing: 0.5px; }
 .hd-right { display: flex; align-items: center; gap: 14px; pointer-events: all; }
+.lang-toggle {
+  padding: 3px 10px; border-radius: 5px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+  color: var(--gray-700); background: rgba(0,0,0,0.06);
+  transition: background 0.2s, color 0.2s;
+}
+.lang-toggle:hover { background: rgba(0,0,0,0.12); color: var(--black); }
 #slide-counter { font-size: 15.6px; color: var(--gray-500); font-weight: 600; letter-spacing: 1px; }
 #slide-counter span { color: var(--black); }
 #btn-fullscreen {

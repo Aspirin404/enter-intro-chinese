@@ -1,37 +1,50 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { getSlideHTML, SLIDE_TITLES, SLIDE_ICONS } from './data/slides';
+import { getSlideHTML, SLIDE_ICONS } from './data/slides';
+import { getContent, type Locale } from './data/content';
 import './slides.css';
 
 const TOTAL = 14;
+const LOGO_URL = 'https://grazia-prod.oss-ap-southeast-1.aliyuncs.com/resources/uid_100000002/e65c.png';
+
+function getInitialLocale(): Locale {
+  const p = new URLSearchParams(window.location.search);
+  const lang = p.get('lang');
+  if (lang === 'en' || lang === 'zh') return lang;
+  return navigator.language.startsWith('zh') ? 'zh' : 'en';
+}
+
+function getInitialSlide(): number {
+  const p = new URLSearchParams(window.location.search);
+  const s = parseInt(p.get('slide') || '1', 10);
+  return Math.max(0, Math.min(TOTAL - 1, s - 1));
+}
+
+function updateURL(slide: number, locale: Locale) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('slide', String(slide + 1));
+  url.searchParams.set('lang', locale);
+  window.history.replaceState(null, '', url.toString());
+}
 
 export default function App() {
-  const getInitialSlide = () => {
-    const p = new URLSearchParams(window.location.search);
-    const s = parseInt(p.get('slide') || '1', 10);
-    return Math.max(0, Math.min(TOTAL - 1, s - 1));
-  };
-
+  const [locale, setLocale] = useState<Locale>(getInitialLocale);
   const [current, setCurrent] = useState(getInitialSlide);
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef(current);
   currentRef.current = current;
-  
 
-  // Render slides into DOM on mount
+  const C = getContent(locale);
+
+  // Render slides into DOM
   useEffect(() => {
-    if (stageRef.current) {
-      stageRef.current.innerHTML = getSlideHTML().join('\n');
-      // Set initial slide based on URL param
-      const initial = getInitialSlide();
-      if (initial > 0) {
-        const slides = stageRef.current.querySelectorAll('.slide');
-        slides[0]?.classList.remove('is-active');
-        slides[initial]?.classList.add('is-active');
-      }
-    }
-  }, []);
+    if (!stageRef.current) return;
+    stageRef.current.innerHTML = getSlideHTML(locale).join('\n');
+    const slides = stageRef.current.querySelectorAll('.slide');
+    slides.forEach(s => s.classList.remove('is-active'));
+    slides[currentRef.current]?.classList.add('is-active');
+  }, [locale]);
 
   // Handle slide transitions
   const goTo = useCallback((index: number) => {
@@ -44,16 +57,13 @@ export default function App() {
     const prevSlide = slides[currentRef.current] as HTMLElement;
     const nextSlide = slides[index] as HTMLElement;
 
-    // Position incoming slide off-screen
     nextSlide.classList.remove('is-active', 'is-leaving-left', 'is-leaving-right', 'is-enter-from-right', 'is-enter-from-left');
     nextSlide.classList.add(forward ? 'is-enter-from-right' : 'is-enter-from-left');
-    nextSlide.getBoundingClientRect(); // force reflow
+    nextSlide.getBoundingClientRect();
 
-    // Animate outgoing
     prevSlide.classList.remove('is-active');
     prevSlide.classList.add(forward ? 'is-leaving-left' : 'is-leaving-right');
 
-    // Animate incoming
     nextSlide.classList.remove('is-enter-from-right', 'is-enter-from-left');
     nextSlide.classList.add('is-active');
 
@@ -62,13 +72,19 @@ export default function App() {
     }, 520);
 
     setCurrent(index);
-    const url = new URL(window.location.href);
-    url.searchParams.set('slide', String(index + 1));
-    window.history.replaceState(null, '', url.toString());
-  }, []);
+    updateURL(index, locale);
+  }, [locale]);
 
   const next = useCallback(() => goTo((currentRef.current + 1) % TOTAL), [goTo]);
   const prev = useCallback(() => goTo((currentRef.current - 1 + TOTAL) % TOTAL), [goTo]);
+
+  const toggleLocale = useCallback(() => {
+    setLocale(prev => {
+      const next = prev === 'zh' ? 'en' : 'zh';
+      updateURL(currentRef.current, next);
+      return next;
+    });
+  }, []);
 
   // Keyboard & touch
   useEffect(() => {
@@ -87,6 +103,7 @@ export default function App() {
         case '?': setHintsOpen(v => !v); break;
         case 'Home': goTo(0); break;
         case 'End': goTo(TOTAL - 1); break;
+        case 'l': case 'L': toggleLocale(); break;
       }
     };
     let touchStartX = 0;
@@ -103,7 +120,7 @@ export default function App() {
       document.removeEventListener('touchstart', onTouchStart);
       document.removeEventListener('touchend', onTouchEnd);
     };
-  }, [next, prev, goTo]);
+  }, [next, prev, goTo, toggleLocale]);
 
   const pct = TOTAL > 1 ? (current / (TOTAL - 1)) * 100 : 100;
 
@@ -116,13 +133,20 @@ export default function App() {
       <div id="header">
         <div className="hd-logo">
           <div className="logo-icon">
-            <img src="https://grazia-prod.oss-ap-southeast-1.aliyuncs.com/resources/uid_100000002/e65c.png" alt="Enter.pro" crossOrigin="anonymous" />
+            <img src={LOGO_URL} alt="Enter.pro" crossOrigin="anonymous" />
           </div>
           <span>Enter.pro</span>
         </div>
         <div className="hd-right">
+          <button
+            className="lang-toggle"
+            title={locale === 'zh' ? 'Switch to English (L)' : '\u5207\u6362\u4E2D\u6587 (L)'}
+            onClick={toggleLocale}
+          >
+            {locale === 'zh' ? 'EN' : '\u4E2D'}
+          </button>
           <div id="slide-counter"><span>{current + 1}</span> / <span>{TOTAL}</span></div>
-          <button id="btn-fullscreen" title="\u5168\u5C4F (F)" onClick={() => {
+          <button id="btn-fullscreen" title={C.ui.fullscreenBtn} onClick={() => {
             if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
             else document.exitFullscreen?.();
           }}>{'\u26F6'}</button>
@@ -134,31 +158,31 @@ export default function App() {
 
       {/* Controls */}
       <div id="controls">
-        <button className="ctrl-btn" title="&#x5E7B;&#x706F;&#x7247;&#x603B;&#x89C8; (O)" onClick={() => setOverviewOpen(v => !v)}>
+        <button className="ctrl-btn" title={C.ui.overviewBtn} onClick={() => setOverviewOpen(v => !v)}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         </button>
-        <button className="ctrl-btn" title="&#x4E0A;&#x4E00;&#x5F20; (&#x2190;)" onClick={() => prev()}>
+        <button className="ctrl-btn" title={C.ui.prevBtn} onClick={() => prev()}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <div id="dots">
           {Array.from({ length: TOTAL }).map((_, i) => (
-            <div key={i} className={`dot${i === current ? ' is-active' : ''}`} title={SLIDE_TITLES[i]} onClick={() => goTo(i)} />
+            <div key={i} className={`dot${i === current ? ' is-active' : ''}`} title={C.slideTitles[i]} onClick={() => goTo(i)} />
           ))}
         </div>
-        <button className="ctrl-btn" title="&#x4E0B;&#x4E00;&#x5F20; (&#x2192;)" onClick={() => next()}>
+        <button className="ctrl-btn" title={C.ui.nextBtn} onClick={() => next()}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <button className="ctrl-btn" title="&#x952E;&#x76D8;&#x5FEB;&#x6377;&#x952E; (?)" onClick={() => setHintsOpen(v => !v)}>?</button>
+        <button className="ctrl-btn" title={C.ui.shortcutsBtn} onClick={() => setHintsOpen(v => !v)}>?</button>
       </div>
 
       {/* Overview */}
       <div id="overview" className={overviewOpen ? 'is-open' : ''}>
         <div id="overview-header">
-          <h2>{'\u5E7B\u706F\u7247\u603B\u89C8'}</h2>
+          <h2>{C.ui.slideOverview}</h2>
           <button id="btn-close-overview" onClick={() => setOverviewOpen(false)}>{'\u2715'}</button>
         </div>
         <div id="overview-grid">
-          {SLIDE_TITLES.map((title, i) => (
+          {C.slideTitles.map((title, i) => (
             <div key={i} className={`ov-thumb${i === current ? ' is-current' : ''}`} onClick={() => { goTo(i); setOverviewOpen(false); }}>
               <span className="ov-thumb-num">{i + 1}</span>
               <div className="ov-thumb-icon">{SLIDE_ICONS[i]}</div>
@@ -172,15 +196,16 @@ export default function App() {
       {hintsOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#1a1a1a', borderRadius: 12, padding: '32px 40px', minWidth: 300 }}>
-            <h3 style={{ color: '#fff', fontSize: 16, marginBottom: 20 }}>{'\u952E\u76D8\u5FEB\u6377\u952E'}</h3>
+            <h3 style={{ color: '#fff', fontSize: 16, marginBottom: 20 }}>{C.ui.keyboardShortcuts}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 20px', fontSize: 12 }}>
-              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>{'\u2190 \u2192'}</kbd><span style={{ color: '#888' }}>{'\u4E0A / \u4E0B\u4E00\u5F20'}</span>
-              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>O</kbd><span style={{ color: '#888' }}>{'\u5E7B\u706F\u7247\u603B\u89C8'}</span>
-              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>F</kbd><span style={{ color: '#888' }}>{'\u5168\u5C4F'}</span>
-              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>Esc</kbd><span style={{ color: '#888' }}>{'\u5173\u95ED\u9762\u677F'}</span>
-              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>?</kbd><span style={{ color: '#888' }}>{'\u663E\u793A\u5FEB\u6377\u952E'}</span>
+              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>{'\u2190 \u2192'}</kbd><span style={{ color: '#888' }}>{C.ui.prevNext}</span>
+              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>O</kbd><span style={{ color: '#888' }}>{C.ui.slideOverview}</span>
+              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>F</kbd><span style={{ color: '#888' }}>{C.ui.fullscreen}</span>
+              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>L</kbd><span style={{ color: '#888' }}>{locale === 'zh' ? '\u5207\u6362\u82F1\u6587' : 'Switch to Chinese'}</span>
+              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>Esc</kbd><span style={{ color: '#888' }}>{C.ui.closePanel}</span>
+              <kbd style={{ background: '#333', color: '#fff', padding: '3px 8px', borderRadius: 4 }}>?</kbd><span style={{ color: '#888' }}>{C.ui.showShortcuts}</span>
             </div>
-            <button onClick={() => setHintsOpen(false)} style={{ marginTop: 24, width: '100%', padding: 10, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 7, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{'\u5173\u95ED'}</button>
+            <button onClick={() => setHintsOpen(false)} style={{ marginTop: 24, width: '100%', padding: 10, background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 7, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{C.ui.close}</button>
           </div>
         </div>
       )}
