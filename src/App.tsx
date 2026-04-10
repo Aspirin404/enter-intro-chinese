@@ -10,7 +10,7 @@ function getInitialLocale(): Locale {
   const p = new URLSearchParams(window.location.search);
   const lang = p.get('lang');
   if (lang === 'en' || lang === 'zh') return lang;
-  return navigator.language.startsWith('zh') ? 'zh' : 'en';
+  return 'en';
 }
 
 function getInitialSlide(): number {
