@@ -241,6 +241,8 @@ const zh = {
     prevBtn: '\u4E0A\u4E00\u5F20 (\u2190)',
     nextBtn: '\u4E0B\u4E00\u5F20 (\u2192)',
     shortcutsBtn: '\u952E\u76D8\u5FEB\u6377\u952E (?)',
+    exportPdf: '\u5BFC\u51FA PDF',
+    exporting: '\u5BFC\u51FA\u4E2D\u2026',
   },
   slideTitles: [
     '\u5C01\u9762', 'Enter \u662F\u4EC0\u4E48', '\u76EE\u6807\u53D7\u4F17\u4E0E\u7406\u5FF5', '\u5982\u4F55\u5FEB\u901F\u521B\u4F5C',
@@ -470,6 +472,8 @@ const en: typeof zh = {
     prevBtn: 'Previous (\u2190)',
     nextBtn: 'Next (\u2192)',
     shortcutsBtn: 'Keyboard Shortcuts (?)',
+    exportPdf: 'Export PDF',
+    exporting: 'Exporting…',
   },
   slideTitles: [
     'Cover', 'What is Enter', 'Audience & Philosophy', 'Quick Start',

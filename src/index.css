@@ -141,6 +141,9 @@ ul { list-style: none; }
 .ctrl-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
 .ctrl-btn:active { opacity: 0.7; }
 .ctrl-btn svg { width: 16px; height: 16px; }
+.ctrl-btn.is-exporting { opacity: 0.5; cursor: wait; }
+.ctrl-btn .spin-icon { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* Dot indicators */
 #dots { display: flex; align-items: center; gap: 4px; margin: 0 4px; }
